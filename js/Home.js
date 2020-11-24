@@ -34,8 +34,8 @@ function createInnerHTML(){
             <td>RS ${empData._salary}</td>
             <td>${stringifyDate(empData._startDate)}</td>
             <td>
-                <img id="${empData._id}" onclick="remove(this)" alt="delete" src="../assets/icons/delete-black-18dp.svg">
-                <img id="${empData._id}" onclick="update(this)" alt="edit" src="../assets/icons/create-black-18dp.svg">
+                <img id="${empData.id}" onclick="remove(this)" alt="delete" src="../assets/icons/delete-black-18dp.svg">
+                <img id="${empData.id}" onclick="update(this)" alt="edit" src="../assets/icons/create-black-18dp.svg">
             </td>
         </tr>
         `;
@@ -53,18 +53,18 @@ function getDeptHTML(deptList) {
 }
 
 const update = (node) => {
-    let empPayrollData = empPayrollList.find(empData => empData._id == node.id);
+    let empPayrollData = empPayrollList.find(empData => empData.id == node.id);
     if(!empPayrollData) return;
     localStorage.setItem('editEmp', JSON.stringify(empPayrollData));
     window.location.replace(site_properties.add_emp_payroll_page);
 }
 
 const remove = (node) => {
-    let empPayrollData = empPayrollList.find(empData => empData._id == node.id);
+    let empPayrollData = empPayrollList.find(empData => empData.id == node.id);
     if(!empPayrollData) { alert("Not deleted"); return;}
     const index = empPayrollList
-                    .map(empData => empData._id)
-                    .indexOf(empPayrollData._id);
+                    .map(empData => empData.id)
+                    .indexOf(empPayrollData.id);
     empPayrollList.splice(index, 1);
     localStorage.setItem("EmployeePayrollList", JSON.stringify(empPayrollList));
     document.querySelector('.emp-count').textContent = empPayrollList.length;

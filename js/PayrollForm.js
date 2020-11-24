@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             return;
         }
         try {
-            (new EmployeePayrollData()).name = name.value;
+            checkName(name.value);
             nameError.textContent = "";
         } catch (e) {
             nameError.textContent = e;
@@ -18,12 +18,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
     const date = document.querySelector('#startDate');
     date.addEventListener('input', function() {
-        let startDate = new Array();
-        startDate.push(document.querySelector("#day").value);
-        startDate.push(document.querySelector("#month").value);
-        startDate.push(document.querySelector("#year").value);
+        let startDate = document.querySelector("#day").value + " " +
+                        document.querySelector("#month").value + " " +
+                        document.querySelector("#year").value;
         try {
-            (new EmployeePayrollData()).startDate = new Date(startDate[2],startDate[1],startDate[0]);
+            checkStartDate(new Date(Date.parse(startDate)));
             setTextValue('.date-error', "");
         } catch (e) {
             setTextValue('.date-error', e);
@@ -37,6 +36,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         output.textContent = salary.value;
     });
 
+    document.querySelector('#cancelButton').href = site_properties.home_page;
     checkForUpdate();
 }); 
 
@@ -104,7 +104,7 @@ const save = (event) => {
         setEmployeePayrollObject();
         createAndUpdateStorage();
         resetForm();
-        window.location.replace("../pages/Home.html");
+        window.location.replace(site_properties.home_page);
     }catch(exception){
         console.error(exception);
         return;
@@ -113,6 +113,7 @@ const save = (event) => {
 
 function setEmployeePayrollObject() {
     try {
+        if(!isUpdate) employeePayrollObj.id = createNewEmployeeId();
         employeePayrollObj._name = document.getElementById('name').value;
         employeePayrollObj._profilePic = getRadioValue(document.getElementsByName('profile'));
         employeePayrollObj._gender = getRadioValue(document.getElementsByName('gender'));
@@ -134,12 +135,14 @@ function setEmployeePayrollObject() {
 function createAndUpdateStorage() {
     let employeePayrollList = JSON.parse(localStorage.getItem("EmployeePayrollList"));
     if(employeePayrollList){
-        let employeeData = employeePayrollList.find(empData => empData._id == employeePayrollObj._id);
-        if (!employeeData) employeePayrollList.push(createEmpData());
-        else{
+        let employeeData = employeePayrollList.
+                            find(empData => empData._id == employeePayrollObj._id);
+        if (!employeeData) {
+            employeePayrollList.push(employeePayrollObj);
+        } else{
             const index = employeePayrollList.map(empData => empData._id)
                                              .indexOf(employeeData._id);
-            employeePayrollList.splice(index, 1, createEmpData(employeeData._id));
+            employeePayrollList.splice(index, 1, employeePayrollObj);
         }
     }else{
         employeePayrollList = [createEmpData()];
