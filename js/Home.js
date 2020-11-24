@@ -1,15 +1,33 @@
 let empPayrollList;
 window.addEventListener('DOMContentLoaded',(event)=>{ 
-    empPayrollList = getEmployeePayrollDataFromStorage();
-    document.querySelector('.emp-count').textContent = empPayrollList.length;
+    if(site_properties.use_local_storage.match("true")) {
+        getEmployeePayrollDataFromStorage();
+    } else getEmployeePayrollDataFromServer();
+});
+
+const processEmployeePayrollDataResponse = () => {
+    document.querySelector(".emp-count").textContent = empPayrollList.length;
     createInnerHTML();
     localStorage.removeItem('editEmp');
-});
+}
 
 const getEmployeePayrollDataFromStorage = () => {
     return localStorage.getItem("EmployeePayrollList") ?
         JSON.parse(localStorage.getItem("EmployeePayrollList")) :
         [];
+}
+
+const getEmployeePayrollDataFromServer = () => {
+    makeServiceCall("GET", site_properties.server_url, true)
+        .then(responseText => {
+            empPayrollList = JSON.parse(responseText);
+            processEmployeePayrollDataResponse();
+        })
+        .catch(error => {
+            console.log("GET Error Status: " + JSON.stringify(error));
+            empPayrollList = [];
+            processEmployeePayrollDataResponse();
+        });
 }
 
 function createInnerHTML(){
