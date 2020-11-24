@@ -36,22 +36,6 @@
       "_note": "",
       "_profilePic": "../assets/profile-images/Ellipse -1.png",
       "id": 3
-    },
-    {
-      "id": "7",
-      "_name": "Praveen Satya",
-      "_profilePic": "../assets/profile-images/Ellipse -3.png",
-      "_gender": "M",
-      "_department": [
-        "HR",
-        "Marketing&Sales",
-        "Finance",
-        "Admin",
-        "others"
-      ],
-      "_salary": "449000",
-      "_notes": "Hello Praveen Here!",
-      "_startDate": "2020-12-13T18:30:00.000Z"
     }
   ]
 }
